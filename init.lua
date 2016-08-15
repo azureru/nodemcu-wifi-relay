@@ -26,7 +26,7 @@ end
 
 -- put your WIFI configuration here
 -- it's hard coded - for home hack
--- but there's some module out there that can make this more pretty
+-- but there's some module out there that can make this more pretty (e.g. http://nodemcu.readthedocs.io/en/dev/en/modules/enduser-setup/)
 wifi.setmode(wifi.STATION)
 cfg = {
     ip      ="10.0.1.10",
@@ -34,7 +34,7 @@ cfg = {
     gateway ="10.0.1.1"
   }
 wifi.sta.setip(cfg)
-wifi.sta.config("WifiSSID","WifiPassword")
+wifi.sta.config("YourWifiSSID","YourWifiPassword")
 wifi.sta.autoconnect(1)
 
 print ("Begin \r\n")
