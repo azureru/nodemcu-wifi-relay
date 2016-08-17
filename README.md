@@ -10,6 +10,12 @@ Hardware are purchased from AliExpress
 - Some heat shrink tubes
 - Some 10A cables
 
+# Upload
+
+- Upload everything to your ESP
+- Run `test.lua` to make sure - test accordingly
+- Rename `test.lua` into `init.lua`
+
 (disclaimer: The links are affiliate links)
 
 
