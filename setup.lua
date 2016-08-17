@@ -46,6 +46,4 @@ function module.start()
   wifi.sta.getap(wifi_start)
 end
 
-module.start()
-
 return module
