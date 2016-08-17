@@ -52,6 +52,34 @@ local function checkPrerequisites()
     gpio.write(config.RELAY_PIN, pin);
 end
 
+local function sendHttp(client, statusCode, httpText)
+    if (statusCode == "200") then
+        statusCode = statusCode .. " OK"
+    elseif statusCode == "401" then
+        statusCode = statusCode .. " Unauthorized"
+    elseif statusCode == "400" then
+        statusCode = statusCode .. " Bad Request"
+    end
+
+    local htmlBuffer = "HTTP/1.0 ".. statusCode .."\r\nServer:nodemcu-wifi-relay\r\nAccess-Control-Allow-Origin:*\r\nContent-Type:application/json\r\nConnection:close\r\n\r\n";
+
+    -- return HTTP result
+    client:send(htmlBuffer .. httpText);
+    collectgarbage();
+end
+
+local function checkAuth(auth)
+    -- auth token is basically SHA1(secret + SHA1(id)) (HMACSHA1?)
+    local sha1Id = crypto.toHex(crypto.hash("sha1", config.ID))
+    local sha1Auth = crypto.toHex(crypto.hash("sha1", config.SECRET .. sha1Id))
+    print(sha1Auth)
+    if (sha1Auth == auth) then
+        return true
+    else
+        return false
+    end
+end
+
 function module.start()
     -- Which relay we use
     gpio.mode(config.RELAY_PIN, gpio.OUTPUT)
@@ -63,7 +91,6 @@ function module.start()
     srv=net.createServer(net.TCP)
     srv:listen(80,function(conn) --change port number if required. Provides flexibility when controlling through internet.
         conn:on("receive", function(client,request)
-            local html_buffer = "HTTP/1.0 200 OK\r\nServer:relay\r\nAccess-Control-Allow-Origin:*\r\nContent-Type:application/json\r\nConnection:close\r\n\r\n";
 
             -- parse HTTP proto texts
             local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
@@ -78,23 +105,36 @@ function module.start()
                 end
             end
 
-            if(_GET.pin == "ON")then
-               makeOn();
-               html_buffer = html_buffer .. config.STATE_ON;
-            elseif(_GET.pin == "OFF")then
-               makeOff()
-               html_buffer = html_buffer .. config.STATE_OFF;
-            else
-                if file.exists("on.state") then
-                  html_buffer = html_buffer .. config.STATE_ON;
+            -- auth
+            if config.AUTH == 1 then
+                -- check for auth
+                local auth = _GET.auth
+                if auth == "" or auth == nil then
+                    sendHttp(client, "401", '{"code":401,"message":"Missing Auth!"}')
+                    return
+                end
+                -- check the auth
+                if checkAuth(auth) then 
+                    -- OK, moving on :)
                 else
-                  html_buffer = html_buffer .. config.STATE_OFF;
+                    sendHttp(client, "401", '{"code":401,"message":"Invalid Auth!"}')
+                    return
                 end
             end
 
-            -- return HTTP result
-            client:send(html_buffer);
-            collectgarbage();
+            if (_GET.pin == "ON") then
+               makeOn();
+               sendHttp(client, "200", config.STATE_ON)
+            elseif (_GET.pin == "OFF") then
+               makeOff()
+               sendHttp(client, "200", config.STATE_OFF)
+            else
+                if file.exists("on.state") then
+                    sendHttp(client, "200", config.STATE_ON)
+                else
+                    sendHttp(client, "200", config.STATE_OFF)
+                end
+            end
         end)
         conn:on("sent", function(client) client:close() end)
     end)

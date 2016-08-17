@@ -7,6 +7,7 @@ local function wifi_wait_ip()
   else
     tmr.stop(1)
     print("\n====================================")
+    print("ID is: " .. config.ID)
     print("ESP8266 mode is: " .. wifi.getmode())
     print("MAC address is: " .. wifi.ap.getmac())
     print("IP is "..wifi.sta.getip())

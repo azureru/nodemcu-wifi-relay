@@ -3,7 +3,7 @@ local module = {}
 
 -- Put your SSID And Password pair here
 -- You can put multiple - it will connect to the first one available
-module.SSID = {}
+module.SSID             = {}
 module.SSID["YourSSID"] = "YourPassword"
 
 -- Which relay we use
@@ -23,5 +23,9 @@ module.STATE_OFF = "{\"state\":\"OFF\"}"
 -- no : Normally Open
 -- nc : Normally Closed
 module.RELAY_MODE = "no"
+
+-- security
+module.ID     = "11"
+module.SECRET = "shashasha"
 
 return module
