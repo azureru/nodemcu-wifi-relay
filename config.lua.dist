@@ -1,0 +1,27 @@
+-- file : config.lua
+local module = {}
+
+-- Put your SSID And Password pair here
+-- You can put multiple - it will connect to the first one available
+module.SSID = {}
+module.SSID["YourSSID"] = "YourPassword"
+
+-- Which relay we use
+module.RELAY_PIN = 1
+
+-- STATIC 1 to use static IP, 0 to use DHCP
+module.STATIC = 1
+
+module.IP = "10.0.1.11"
+module.NETMASK = "255.255.255.0"
+module.GATEWAY = "10.0.1.1"
+
+-- JSON that represent ON and OFF-ness
+module.STATE_ON  = "{'state':'ON'}"
+module.STATE_OFF = "{'state':'OFF'}"
+
+-- no : Normally Open
+-- nc : Normally Closed
+module.RELAY_MODE = "no"
+
+return module
