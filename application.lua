@@ -63,7 +63,7 @@ function module.start()
     srv=net.createServer(net.TCP)
     srv:listen(80,function(conn) --change port number if required. Provides flexibility when controlling through internet.
         conn:on("receive", function(client,request)
-            local html_buffer = "HTTP/1.0 200 OK\r\nServer:relay\r\nAccess-Control-Allow-Origin:*\r\nContent-Type:text/json\r\nConnection:close\r\n\r\n";
+            local html_buffer = "HTTP/1.0 200 OK\r\nServer:relay\r\nAccess-Control-Allow-Origin:*\r\nContent-Type:application/json\r\nConnection:close\r\n\r\n";
 
             -- parse HTTP proto texts
             local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
@@ -94,9 +94,9 @@ function module.start()
 
             -- return HTTP result
             client:send(html_buffer);
-            client:close();
             collectgarbage();
         end)
+        conn:on("sent", function(client) client:close() end)
     end)
 end
 

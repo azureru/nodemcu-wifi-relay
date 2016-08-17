@@ -17,8 +17,8 @@ module.NETMASK = "255.255.255.0"
 module.GATEWAY = "10.0.1.1"
 
 -- JSON that represent ON and OFF-ness
-module.STATE_ON  = "{'state':'ON'}"
-module.STATE_OFF = "{'state':'OFF'}"
+module.STATE_ON  = "{\"state\":\"ON\"}"
+module.STATE_OFF = "{\"state\":\"OFF\"}"
 
 -- no : Normally Open
 -- nc : Normally Closed
