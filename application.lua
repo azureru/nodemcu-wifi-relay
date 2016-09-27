@@ -2,14 +2,6 @@
 local module = {}
 m = nil
 
-local function isStateOn()
-  if file.exists("on.state") then
-     return true
-  else
-     return false
-  end
-end
-
 -- function to turn on and write state
 local function makeOn()
   local pin = gpio.HIGH
@@ -30,26 +22,6 @@ local function makeOff()
   end
   gpio.write(config.RELAY_PIN, pin);
   file.remove("on.state")
-end
-
-local function checkPrerequisites()
-    -- Basically check for the existence of `on.state` file
-    -- If it exists then the relay is in `on` state
-    local pin = gpio.HIGH
-    if isStateOn() then
-      if (config.RELAY_MODE == "nc") then
-        pin = gpio.LOW
-      else
-        pin = gpio.HIGH
-      end
-    else
-      if (config.RELAY_MODE == "nc") then
-        pin = gpio.HIGH
-      else
-        pin = gpio.LOW
-      end
-    end
-    gpio.write(config.RELAY_PIN, pin);
 end
 
 local function sendHttp(client, statusCode, httpText)
@@ -81,11 +53,6 @@ local function checkAuth(auth)
 end
 
 function module.start()
-    -- Which relay we use
-    gpio.mode(config.RELAY_PIN, gpio.OUTPUT)
-
-    -- Check for initial
-    checkPrerequisites()
 
     -- HTTP Server
     srv=net.createServer(net.TCP)
@@ -114,7 +81,7 @@ function module.start()
                     return
                 end
                 -- check the auth
-                if checkAuth(auth) then 
+                if checkAuth(auth) then
                     -- OK, moving on :)
                 else
                     sendHttp(client, "401", '{"code":401,"message":"Invalid Auth!"}')
