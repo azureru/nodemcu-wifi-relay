@@ -13,7 +13,7 @@ A HTTP based relay that I use on my home.
 # Features
 - Using Boostrap code
 - Save `on/off` state to a file - so the relay can recover from the previous state (e.g. when there's a blackout)
-- Expose JSON API
+- Expose simple JSON so we can utilize it on central hub (node-red, OpenHab etc)
 
 # Building Your Own
 

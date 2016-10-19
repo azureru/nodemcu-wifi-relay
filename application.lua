@@ -2,7 +2,7 @@
 local module = {}
 m = nil
 
--- function to turn on and write state
+-- function to turn on and write state file
 local function makeOn()
   local pin = gpio.HIGH
   if config.RELAY_MODE == "nc" then
@@ -14,7 +14,7 @@ local function makeOn()
   file.close()
 end
 
--- function to turn off and remove state
+-- function to turn off and remove state file
 local function makeOff()
   local pin = gpio.LOW
   if config.RELAY_MODE == "nc" then
@@ -24,6 +24,7 @@ local function makeOff()
   file.remove("on.state")
 end
 
+-- send simple HTTP response
 local function sendHttp(client, statusCode, httpText)
     if (statusCode == "200") then
         statusCode = statusCode .. " OK"
@@ -40,6 +41,7 @@ local function sendHttp(client, statusCode, httpText)
     collectgarbage();
 end
 
+-- Simple auth checking
 local function checkAuth(auth)
     -- auth token is basically SHA1(secret + SHA1(id)) (HMACSHA1?)
     local sha1Id = crypto.toHex(crypto.hash("sha1", config.ID))

@@ -10,11 +10,17 @@ module.SSID["YourSSID"] = "YourPassword"
 module.RELAY_PIN = 1
 
 -- STATIC 1 to use static IP, 0 to use DHCP
+-- STATIC ip will always be faster since there's no need to ask to dhcp server to get IP
 module.STATIC = 1
 
 module.IP = "10.0.1.11"
 module.NETMASK = "255.255.255.0"
 module.GATEWAY = "10.0.1.1"
+
+-- wifi.PHYMODE_B 802.11b, More range, Low Transfer rate, More current draw
+-- wifi.PHYMODE_G 802.11g, Medium range, Medium transfer rate, Medium current draw
+-- wifi.PHYMODE_N 802.11n, Least range, Fast transfer rate, Least current draw
+module.SIGNAL_MODE = wifi.PHYMODE_N
 
 -- JSON that represent ON and OFF-ness
 module.STATE_ON  = "{\"state\":\"ON\"}"
